@@ -1,0 +1,25 @@
+.container {
+  background-color: #3881e0;
+  border: 1px solid #3881e0;
+  border-radius: 30px;
+  width: 400px;
+  height: 500px;
+  box-shadow: 0px 10px 30px 10px rgba(56, 129, 224, .4);
+  display: grid;
+  grid-template-columns: 100px 100px 100px 100px;
+  grid-template-rows: 125px 125px 125px 125px;
+  grid-template-areas: 
+    "location-temp . . weather-icon"
+    ". . . today-date"
+    "conditions conditions conditions conditions"
+    "forecast forecast forecast forecast";
+}
+.location-temp {
+  grid-area: location-temp;
+}
+.weather-icon {
+  grid-area: weather-icon;
+}
+.today-date {
+  grid-area
+}
