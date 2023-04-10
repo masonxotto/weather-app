@@ -6,6 +6,7 @@ import api_key from '../config.json';
 function App() {
   const [currentWeather, setCurrentWeather] = useState({});
   const [currentCondition, setCurrentCondition] = useState({});
+  const [currentForecast, setCurrentForecast] = useState([]);
   const [location, setLocation] = useState({});
 
   //weatherapi.com key
@@ -21,12 +22,14 @@ function App() {
       if("geolocation" in navigator) {
         const position = await getLocation();
         const latLong = `${position.coords.latitude},${position.coords.longitude}`;
-        const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${APIKEY}&q=${latLong}`);
-        const weather = await response.json();
+        const weatherResponse = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=${APIKEY}&q=${latLong}`);
+        const weather = await weatherResponse.json();
         setCurrentWeather(weather.current);
         setCurrentCondition(weather.current.condition);
         setLocation(weather.location);
-        console.log(weather);
+        setCurrentForecast(weather.forecast.forecastday.map((forecast) => {
+          return [...currentForecast, forecast.hour];
+        }));
       }
     }
     getWeather();

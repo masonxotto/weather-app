@@ -1,5 +1,5 @@
 .container {
-  background-color: #3881e0;
+  background-image: linear-gradient(#69a5f5, #3881e0, #2478e6);
   border: 1px solid #3881e0;
   border-radius: 30px;
   padding: 5px;
@@ -11,7 +11,7 @@
   grid-template-rows: 125px 125px 125px 125px;
   grid-template-areas: 
     "location-temp location-temp weather-icon weather-icon"
-    ". . current-condition current-condition"
+    ". . . current-condition"
     "conditions conditions conditions conditions"
     "forecast forecast forecast forecast";
 }
@@ -39,8 +39,7 @@ img {
   grid-area: weather-icon;
 }
 .current-condition {
-  text-align: right;
-  padding-right: 20px;
+  text-align: left;
   grid-area: current-condition;
 }
 .conditions {
