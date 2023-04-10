@@ -8,7 +8,7 @@
   box-shadow: 0px 10px 30px 10px rgba(56, 129, 224, .4);
   display: grid;
   grid-template-columns: 100px 100px 100px 100px;
-  grid-template-rows: 125px 125px 125px 125px;
+  grid-template-rows: 125px 125px 125px 50px;
   grid-template-areas: 
     "location-temp location-temp weather-icon weather-icon"
     ". . . ."
