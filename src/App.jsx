@@ -8,6 +8,9 @@ function App() {
   const [currentCondition, setCurrentCondition] = useState({});
   const [currentForecast, setCurrentForecast] = useState([]);
   const [location, setLocation] = useState({});
+  const [hourlyConditions, setHourlyConditions] = useState([]);
+  const [currentTime , setCurrentTime] = useState('');
+  const dateRange = 6;
 
   //weatherapi.com key
   const APIKEY = api_key.api_key;
@@ -20,16 +23,27 @@ function App() {
   useEffect(() => {
     async function getWeather() {
       if("geolocation" in navigator) {
+        //gets latitude and longitue position for location to be sent to API for weather data
         const position = await getLocation();
         const latLong = `${position.coords.latitude},${position.coords.longitude}`;
-        const weatherResponse = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=${APIKEY}&q=${latLong}`);
+        const theDate = new Date();
+        const date = theDate.toISOString().slice(0, 10);
+        const time = theDate.getHours() + ":" + theDate.getMinutes();
+        setCurrentTime(time);
+        //sets future date to get date range for forecast - today through future date
+        let futureDate = new Date(date);
+        futureDate.setDate(futureDate.getDate() + dateRange);
+        futureDate = futureDate.toISOString().slice(0, 10);
+        
+        //fetch to weather api
+        const weatherResponse = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=${APIKEY}&q=${latLong}&days=6&dt=${date}&dt=${futureDate}`);
         const weather = await weatherResponse.json();
+
         setCurrentWeather(weather.current);
         setCurrentCondition(weather.current.condition);
         setLocation(weather.location);
-        setCurrentForecast(weather.forecast.forecastday.map((forecast) => {
-          return [...currentForecast, forecast.hour];
-        }));
+        setCurrentForecast(weather.forecast.forecastday);
+        setHourlyConditions(weather.forecast.forecastday[0]["hour"])
       }
     }
     getWeather();
@@ -44,22 +58,71 @@ function App() {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     })
   }
+
+  /* 
+    Compares current time to another time, if current time is larger or later than compare time
+    then return true, otherwise it will return false
+  */
+  function compareTime(current, compare) {
+    const currentHour = current.slice(0,2);
+    const currentMinutes = current.slice(3,5);
+    const compareHour = compare.slice(0,2);
+    const compareMinutes = compare.slice(3,5);
+
+    if(currentHour > compareHour) {
+      return true;
+    }
+    if (currentHour === compareHour) {
+      if(currentMinutes > compareMinutes) {
+        return true;
+      }
+      if(currentMinutes === compareMinutes) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function convertTo12Hour(time) {
+    const hour = (time.slice(0,2));
+    const minutes = time.slice(2);
+    if(hour === '00') {
+      return '12' + minutes + ' AM';
+    }
+    if(hour === '12') {
+      return '12' + minutes + ' PM';; 
+    }
+    if(parseInt(hour) < 12) {
+      return hour + minutes + ' AM';
+    }
+    return (parseInt(hour-12)).toString() + minutes + ' PM';
+  }
   
-  let date = new Date();
-  date = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-
-
   return (
     <div className="App"> 
       <div className="container">
         <div className="location-temp">
-          <div className="temp">{`${currentWeather.temp_f}`}&#176;F</div>
+          <div className="temp">{`${Math.round(parseInt(currentWeather.temp_f))}`}&#176;F</div>
           <div className="location">{`${location.name}, ${location.region}`}</div>
         </div>
-        <div className="weather-icon"><img src={currentCondition.icon}/></div>
-        <div className="current-condition">{currentCondition.text}</div>
-        <div className="conditions">conditions</div>
-        <div className="forecast">forecast</div>
+        <div className="weather-icon">
+          <img src={currentCondition.icon}/>
+          <div className="current-condition">{currentCondition.text}</div>
+        </div>
+        <div className="conditions">
+          {(hourlyConditions).map((condition, idx) => {
+            if(!compareTime(currentTime, condition.time.slice(11))) {
+              return(
+                <div className="condition-card" key={idx}>
+                  <span>{Math.round(parseInt(condition.temp_f))}&#176;F</span>
+                  <img src={condition.condition.icon}/>
+                  <span>{convertTo12Hour((condition.time).slice(11))}</span>
+                </div>
+              );
+            }
+          })}
+        </div>
+        <div className="forecast"></div>
       </div>
     </div>
   )

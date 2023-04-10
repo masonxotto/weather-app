@@ -11,44 +11,65 @@
   grid-template-rows: 125px 125px 125px 125px;
   grid-template-areas: 
     "location-temp location-temp weather-icon weather-icon"
-    ". . . current-condition"
+    ". . . ."
     "conditions conditions conditions conditions"
     "forecast forecast forecast forecast";
 }
 img {
+  border-radius: 30px;
   height: 125px;
-  padding-left: 50px;
 }
 .location-temp {
   padding: 10px;
+  padding-top: 15px;
   border-top-left-radius: 30px;
   grid-area: location-temp;
 }
 .temp {
-  font-size: 3rem;
+  font-size: 2.75rem;
 }
 .location {
   font-size: 1.25rem;
 }
 .weather-icon {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 10px;
+  height: 150px;
+  padding-left: 75px;
   border-top-right-radius: 30px;
   grid-area: weather-icon;
 }
 .current-condition {
-  text-align: left;
-  grid-area: current-condition;
+  position: relative;
+  top: -15px;
+  font-size: 1.25rem;
 }
 .conditions {
-  padding: 10px;
+  display: flex;
+  flex-direction: row;
   grid-area: conditions;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+.conditions::-webkit-scrollbar {
+  display: none;
+}
+
 .forecast {
   padding: 10px;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   grid-area: forecast;
+}
+
+.condition-card {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 30px;
 }
