@@ -5,6 +5,7 @@ import api_key from '../config.json';
 
 function App() {
   const [currentWeather, setCurrentWeather] = useState({});
+  const [currentCondition, setCurrentCondition] = useState({});
   const [location, setLocation] = useState({});
 
   //weatherapi.com key
@@ -23,7 +24,9 @@ function App() {
         const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${APIKEY}&q=${latLong}`);
         const weather = await response.json();
         setCurrentWeather(weather.current);
+        setCurrentCondition(weather.current.condition);
         setLocation(weather.location);
+        console.log(weather);
       }
     }
     getWeather();
@@ -39,15 +42,19 @@ function App() {
     })
   }
   
+  let date = new Date();
+  date = date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+
+
   return (
     <div className="App"> 
       <div className="container">
         <div className="location-temp">
-        <div className="location">location</div>
-        <div className="temp">temp</div>
+          <div className="temp">{`${currentWeather.temp_f}`}&#176;F</div>
+          <div className="location">{`${location.name}, ${location.region}`}</div>
         </div>
-        <div className="weather-icon">icon</div>
-        <div className="today-date">today date</div>
+        <div className="weather-icon"><img src={currentCondition.icon}/></div>
+        <div className="current-condition">{currentCondition.text}</div>
         <div className="conditions">conditions</div>
         <div className="forecast">forecast</div>
       </div>
