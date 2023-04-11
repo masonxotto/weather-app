@@ -134,7 +134,7 @@ function App() {
                 <div className="condition-card" key={idx}>
                   <span>{Math.round(parseInt(condition.temp_f))}&#176;F</span>
                   <img src={condition.condition.icon}/>
-                  <span>{convertTo12Hour((condition.time).slice(11))}</span>
+                  <span style={{fontSize: '14px'}}>{convertTo12Hour((condition.time).slice(11))}</span>
                 </div>
               );
           })}
