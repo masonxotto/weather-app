@@ -4,6 +4,7 @@ import './App.css';
 import api_key from '../config.json';
 
 function App() {
+  const [loading, setLoading] = useState(true);
   const [currentWeather, setCurrentWeather] = useState({});
   const [currentCondition, setCurrentCondition] = useState({});
   const [location, setLocation] = useState({});
@@ -45,6 +46,7 @@ function App() {
         setCurrentCondition(weather.current.condition);
         setLocation(weather.location);
         set24HourConditions(weather.forecast.forecastday[0]["hour"], weather.forecast.forecastday[1]["hour"], time);
+        setLoading(false);
         //setCurrentForecast(weather.forecast.forecastday);
         //setHourlyConditions(weather.forecast.forecastday[0]["hour"]);
         //setNextDayConditons(weather.forecast.forecastday[1]["hour"]);
@@ -119,7 +121,8 @@ function App() {
 
   return (
     <div className="App"> 
-      <div className="container">
+      {!loading &&
+        <div className="container">
         <div className="location-temp">
           <div className="temp">{`${Math.round(parseInt(currentWeather.temp_f))}`}&#176;F</div>
           <div className="location">{`${location.name}, ${location.region}`}</div>
@@ -141,6 +144,11 @@ function App() {
         </div>
         <div className="forecast"></div>
       </div>
+      }
+      {loading && 
+        <div className='container'>
+        </div>
+      }
     </div>
   )
 }
