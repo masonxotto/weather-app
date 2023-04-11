@@ -6,11 +6,12 @@ import api_key from '../config.json';
 function App() {
   const [currentWeather, setCurrentWeather] = useState({});
   const [currentCondition, setCurrentCondition] = useState({});
-  const [currentForecast, setCurrentForecast] = useState([]);
   const [location, setLocation] = useState({});
-  const [hourlyConditions, setHourlyConditions] = useState([]);
-  const [currentTime , setCurrentTime] = useState('');
+  const [next24Hours, setNext24Hours] = useState([]);
   const dateRange = 6;
+  //const [currentForecast, setCurrentForecast] = useState([]);
+  //const [hourlyConditions, setHourlyConditions] = useState([]);
+  //const [currentTime , setCurrentTime] = useState('');
 
   //weatherapi.com key
   const APIKEY = api_key.api_key;
@@ -21,6 +22,7 @@ function App() {
     This saves the location data and the current weather data in location and currentWeather
   */
   useEffect(() => {
+    
     async function getWeather() {
       if("geolocation" in navigator) {
         //gets latitude and longitue position for location to be sent to API for weather data
@@ -29,7 +31,7 @@ function App() {
         const theDate = new Date();
         const date = theDate.toISOString().slice(0, 10);
         const time = theDate.getHours() + ":" + theDate.getMinutes();
-        setCurrentTime(time);
+        //setCurrentTime(time);
         //sets future date to get date range for forecast - today through future date
         let futureDate = new Date(date);
         futureDate.setDate(futureDate.getDate() + dateRange);
@@ -42,13 +44,30 @@ function App() {
         setCurrentWeather(weather.current);
         setCurrentCondition(weather.current.condition);
         setLocation(weather.location);
-        setCurrentForecast(weather.forecast.forecastday);
-        setHourlyConditions(weather.forecast.forecastday[0]["hour"])
+        set24HourConditions(weather.forecast.forecastday[0]["hour"], weather.forecast.forecastday[1]["hour"], time);
+        //setCurrentForecast(weather.forecast.forecastday);
+        //setHourlyConditions(weather.forecast.forecastday[0]["hour"]);
+        //setNextDayConditons(weather.forecast.forecastday[1]["hour"]);
       }
     }
     getWeather();
   }, []);
 
+  /*
+      Set a 24 hour conditions state to hold the conditions for the next 24 hours
+    */
+      function set24HourConditions(today, tomorrow, time) {
+        const hours = parseInt(time.slice(0,2));
+        const nextDays = hours;
+        const conditionArr = []; 
+        for(let i = hours; i < 24; i++) {
+          conditionArr.push(today[i]);
+        }
+        for(let i = 0; i < nextDays; i++) {
+          conditionArr.push(tomorrow[i]);
+        }
+        setNext24Hours(conditionArr);
+      }
 
   /*
     Returns current position. Will extract latitude and longitude from this.
@@ -97,7 +116,7 @@ function App() {
     }
     return (parseInt(hour-12)).toString() + minutes + ' PM';
   }
-  
+
   return (
     <div className="App"> 
       <div className="container">
@@ -110,8 +129,7 @@ function App() {
           <div className="current-condition">{currentCondition.text}</div>
         </div>
         <div className="conditions">
-          {(hourlyConditions).map((condition, idx) => {
-            if(!compareTime(currentTime, condition.time.slice(11))) {
+          {next24Hours.map((condition, idx) => {
               return(
                 <div className="condition-card" key={idx}>
                   <span>{Math.round(parseInt(condition.temp_f))}&#176;F</span>
@@ -119,7 +137,6 @@ function App() {
                   <span>{convertTo12Hour((condition.time).slice(11))}</span>
                 </div>
               );
-            }
           })}
         </div>
         <div className="forecast"></div>
