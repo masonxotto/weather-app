@@ -15,7 +15,7 @@ function App() {
   //const [currentTime , setCurrentTime] = useState('');
 
   //weatherapi.com key
-  const APIKEY = api_key.api_key;
+  const APIKEY = import.meta.env.VITE_API_KEY;
 
   /*
     On mount latitude and longitude will be set if geolocation is enabled in browser.
