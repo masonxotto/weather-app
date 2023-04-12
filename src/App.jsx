@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './App.css';
-import api_key from '../config.json';
+//import api_key from '../config.json';
 
 function App() {
   const [loading, setLoading] = useState(true);
