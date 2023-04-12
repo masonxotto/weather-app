@@ -39,7 +39,7 @@ function App() {
         futureDate = futureDate.toISOString().slice(0, 10);
         
         //fetch to weather api
-        const weatherResponse = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=${APIKEY}&q=${latLong}&days=6&dt=${date}&dt=${futureDate}`);
+        const weatherResponse = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${APIKEY}&q=${latLong}&days=6&dt=${date}&dt=${futureDate}`);
         const weather = await weatherResponse.json();
 
         setCurrentWeather(weather.current);
