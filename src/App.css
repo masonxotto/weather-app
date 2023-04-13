@@ -49,14 +49,23 @@ img {
   display: flex;
   flex-direction: row;
   grid-area: conditions;
-  overflow-x: auto;
+  overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  padding-bottom: 10px;;
 }
-.conditions::-webkit-scrollbar {
-  display: none;
+
+::-webkit-scrollbar {
+  height: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: white; 
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #cecece; 
 }
 
 .forecast {
